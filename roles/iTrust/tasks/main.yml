@@ -1,0 +1,89 @@
+---
+  - name: Include vars
+    include_vars: variables.yml
+
+  - name: update apt-get
+    become: yes
+    shell: 'apt-get update'
+
+  - name: Install Oracle Java 8
+    become: yes
+    shell: 'apt-get install -y default-jdk'
+    
+  - name: install git
+    apt:
+      name: git
+      state: present
+    become: true
+    
+  - name: Set root password
+    become: yes
+    debconf:
+      name: 'mysql-server'
+      question: 'mysql-server/root_password'
+      value: '{{mysql_password}}'
+      vtype: 'password'
+    
+  - name: Set root password again
+    become: yes
+    debconf:
+      name: 'mysql-server'
+      question: 'mysql-server/root_password_again'
+      value: '{{mysql_password}}'
+      vtype: 'password'
+
+  - name: Install Python PIP RPMs
+    become: true
+    package:
+      name: python3-pip
+      state: present
+
+  - name: Install Several Packages
+    become: yes
+    apt:
+      name: ['wget','maven', 'mysql-server']
+
+  - name: Allow port 8080
+    become: yes
+    ufw:
+      rule: allow
+      port: 8080
+
+  - name: Allow port 80
+    become: yes
+    ufw:
+      rule: allow
+      port: 80
+
+  - name: Allow open ssh
+    become: yes
+    ufw:
+      rule: allow
+      name: OpenSSH
+
+  - name: Allow everything and enable UFW
+    become: yes
+    ufw:
+      state: enabled
+
+
+  - name: Install python-mysql
+    apt: pkg=python3-pymysql state=present update_cache=yes
+    become: yes
+
+  - name: update mysql root password for root
+    mysql_user: 
+      name: '{{mysql_user}}'
+      host: localhost
+      check_implicit_admin: yes
+      login_user: '{{mysql_user}}'
+      login_password: '{{mysql_password}}'
+      priv: "*.*:ALL,GRANT"
+
+  - name: Update system
+    become: true
+    command: apt install redis-server
+
+  - name: Update system
+    become: true
+    command: systemctl restart redis.service

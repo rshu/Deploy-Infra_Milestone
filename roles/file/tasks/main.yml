@@ -1,0 +1,17 @@
+---
+  - name: Include vars
+    include_vars: variables.yml
+
+  - name: Copy private key of itrust server to jenkins server
+    # become: yes
+    template: src=templates/itrust_srv.pem dest="{{home_path}}/.ssh/itrust_srv.pem"
+    
+  - name: Copy inventory.ini to jenkins server
+    # become: yes
+    template: src=templates/inventory.ini dest="{{home_path}}/inventory.ini"
+
+  - name: Copy deploy.yml to jenkins server
+    template: src=templates/deployByHook.yml dest="{{home_path}}/deployByHook.yml"
+
+  - name: Copy deploy.yml to jenkins server
+    template: src=templates/variables.yml dest="{{home_path}}/variables.yml"

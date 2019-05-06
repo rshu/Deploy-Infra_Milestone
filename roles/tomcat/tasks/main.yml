@@ -1,0 +1,22 @@
+---
+- name: Create new tomcat user
+  become: yes
+  shell: useradd -r -m -U -d /opt/tomcat -s /bin/false tomcat
+
+- name: download tomcat 
+  become: yes
+  shell: wget http://www-eu.apache.org/dist/tomcat/tomcat-9/v9.0.19/bin/apache-tomcat-9.0.19.tar.gz
+
+- name: unzip tomcat
+  become: yes
+  shell: tar xvzf apache-tomcat-9.0.19.tar.gz
+
+- name: remove zip file
+  become: yes
+  shell: sudo rm apache-tomcat-9.0.19.tar.gz
+
+- name: rename tomcat
+  become: yes
+  shell: mv apache-tomcat-9.0.19 tomcat
+
+  

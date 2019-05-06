@@ -1,0 +1,127 @@
+---
+- hosts: all
+  
+  tasks:
+  - name: install packages and dependencies
+    become: true
+    command: apt install rpcbind
+
+  - name: Allow port 4647
+    become: yes
+    ufw:
+      rule: allow
+      port: 4647
+
+  - name: install unzip
+    become: true
+    command: apt-get install unzip
+
+  - name: Download the source code    
+    command: wget https://releases.hashicorp.com/nomad/0.9.0/nomad_0.9.0_linux_amd64.zip
+
+  - name: unzip source code
+    become: true
+    command: unzip nomad_0.9.0_linux_amd64.zip
+
+  - name: Move the nomad binary to /usr/local/bin/
+    become: true
+    command: chown root:root nomad
+
+  - name: Move the nomad binary to /usr/local/bin/
+    become: true
+    command: mv nomad /usr/local/bin/
+
+  - name: autocomplete-install
+    become: true   
+    command: nomad -autocomplete-install
+
+  - name: autocomplete-install
+    become: true    
+    command: complete -C /usr/local/bin/nomad nomad
+
+  - name: make a directory 
+    become: true   
+    command: mkdir --parents /opt/nomad
+
+
+  - name: Configure Nomad for both server and clients
+    become: true
+    command: mkdir --parents /etc/nomad.d
+
+
+  - name: Configure Nomad for both server and clients
+    become: true  
+    command: chmod 700 /etc/nomad.d
+
+  - name: Configure Nomad for both server and clients
+    become: true  
+    command: touch /etc/nomad.d/nomad.hcl
+
+  - name: Create configuration file in server
+    become: true  
+    command: touch /etc/nomad.d/server.hcl
+
+  - name: Start nomad server
+    become: true  
+    command: nomad agent -config /etc/nomad.d/server.hcl
+
+  - name: Update System
+    become: true  
+    command: apt-get update
+
+  - name: Install Several Packages
+    become: yes
+    command: apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+      
+  - name: Add Docker’s official GPG key
+    become: true  
+    shell: 'curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -'
+
+
+  - name: Add release repository
+    become: true  
+    command: add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+
+  - name: Update System
+    become: true  
+    command: apt-get update
+
+  - name: install docker
+    become: true  
+    command: apt-get install docker-ce docker-ce-cli containerd.io
+
+  - name: Check the current release
+    become: true  
+    command: curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+
+
+  - name: set the permission
+    become: true  
+    command: chmod +x /usr/local/bin/docker-compose
+    
+
+    
+
+
+    
+
+
+
+
+
+
+
+
+    
+
+
+
+    
+
+
+    
+
+
+
+    

@@ -1,0 +1,30 @@
+---
+  - name: Include vars
+    include_vars: variables.yml
+
+  - name: Cloning iTrust
+    git:
+        repo: "https://github.com/ntabassum7/iTrust2-v4.git"
+        dest: "{{home_path}}/iTrust"
+
+  - name: Running the mvn command
+    become: yes
+    command: "mvn -f pom-data.xml clean process-test-classes"
+    args:
+        chdir: "{{home_path}}/iTrust/iTrust2"
+
+  - name: Exporting the war file
+    become: yes
+    command: "mvn clean package -DskipTests"
+    args:
+        chdir: "{{home_path}}/iTrust/iTrust2"
+
+  - name: copy iTrust2.war inside tomcat server webapps
+    become: yes
+    command: cp "{{home_path}}/iTrust/iTrust2/target/iTrust2.war" "{{tomcat_path}}/webapps/"
+
+  - name: run the tomcat server
+    become: yes
+    command: "nohup {{tomcat_path}}/bin/startup.sh"
+  
+

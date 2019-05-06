@@ -1,0 +1,19 @@
+---
+- hosts: itrust
+  roles:
+    - iTrust
+    - tomcat
+    - deploy
+
+- hosts: checkbox
+  roles:
+    - checkbox
+
+- hosts: jenkins
+  roles:
+    - file
+
+  tasks:
+  - name: Include vars
+    include_vars: variables.yml
+  
